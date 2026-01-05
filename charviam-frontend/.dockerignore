@@ -1,0 +1,36 @@
+# Dependencies
+node_modules
+
+# Build output (we build inside the container)
+dist
+
+# Git
+.git
+.gitignore
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+
+# Environment files (use build args instead)
+.env
+.env.*
+!.env.example
+
+# Documentation
+README.md
+docs/
+
+# Test files
+*.test.*
+*.spec.*
+__tests__
+coverage
+
+# Misc
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
