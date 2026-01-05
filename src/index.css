@@ -1,0 +1,1116 @@
+/* Fonts are loaded asynchronously from index.html for better performance */
+/* Charvium Theme Fonts - Added for pre-login pages */
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================================
+   CHARVIUM THEME CSS VARIABLES (HSL System)
+   For pre-login pages - DO NOT MODIFY POST-LOGIN STYLES
+   ======================================== */
+
+@layer base {
+  :root {
+    /* Charvium HSL Color System - Light Mode */
+    --public-background: 0 0% 96%;
+    --public-foreground: 0 0% 9%;
+    --public-card: 0 0% 98%;
+    --public-card-foreground: 0 0% 9%;
+    --public-popover: 0 0% 89%;
+    --public-popover-foreground: 0 0% 9%;
+    --public-primary: 243 75% 58%;
+    --public-primary-foreground: 225 100% 96%;
+    --public-secondary: 0 0% 32%;
+    --public-secondary-foreground: 0 0% 98%;
+    --public-muted: 0 0% 63%;
+    --public-muted-foreground: 0 0% 9%;
+    --public-accent: 250 100% 97%;
+    --public-accent-foreground: 258 89% 66%;
+    --public-destructive: 0 72% 50%;
+    --public-destructive-foreground: 0 85% 97%;
+    --public-border: 0 0% 83%;
+    --public-input: 0 0% 83%;
+    --public-ring: 243 75% 58%;
+    --public-radius: 1.25rem;
+
+    /* Charviam Gradients */
+    --public-hero-gradient-start: 221 83% 53%;
+    --public-hero-gradient-end: 250 63% 58%;
+    --public-section-bg: 220 14% 98%;
+    --public-card-hover: 221 83% 97%;
+
+    /* Charviam Typography */
+    --public-font-sans: 'Lato', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    --public-font-serif: 'EB Garamond', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --public-font-mono: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  }
+
+  .dark {
+    /* Charviam HSL Color System - Dark Mode */
+    --public-background: 0 0% 9%;
+    --public-foreground: 0 0% 98%;
+    --public-card: 0 0% 14%;
+    --public-card-foreground: 0 0% 98%;
+    --public-popover: 0 0% 25%;
+    --public-popover-foreground: 0 0% 98%;
+    --public-primary: 234 89% 73%;
+    --public-primary-foreground: 243 47% 20%;
+    --public-secondary: 0 0% 45%;
+    --public-secondary-foreground: 0 0% 98%;
+    --public-muted: 0 0% 45%;
+    --public-muted-foreground: 0 0% 98%;
+    --public-accent: 261 72% 22%;
+    --public-accent-foreground: 255 91% 76%;
+    --public-destructive: 0 84% 60%;
+    --public-destructive-foreground: 0 85% 97%;
+    --public-border: 0 0% 32%;
+    --public-input: 0 0% 32%;
+    --public-ring: 234 89% 73%;
+
+    /* Charviam Gradients - Dark Mode */
+    --public-hero-gradient-start: 221 83% 45%;
+    --public-hero-gradient-end: 250 63% 50%;
+    --public-section-bg: 222 47% 8%;
+    --public-card-hover: 222 47% 12%;
+    --public-radius: 0rem;
+  }
+}
+
+/* ========================================
+   CHARVIAM UTILITY CLASSES (Pre-Login Only)
+   ======================================== */
+
+@layer utilities {
+
+  /* Public page gradient utilities */
+  .public-gradient-hero {
+    background: linear-gradient(135deg, hsl(var(--public-hero-gradient-start)) 0%, hsl(var(--public-hero-gradient-end)) 100%);
+  }
+
+  .public-gradient-text {
+    background: linear-gradient(135deg, hsl(var(--public-primary)) 0%, hsl(var(--public-secondary)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .public-section-bg {
+    background-color: hsl(var(--public-section-bg));
+  }
+
+  /* Public page background */
+  .public-bg {
+    background-color: hsl(var(--public-background));
+    color: hsl(var(--public-foreground));
+    font-family: var(--public-font-sans);
+  }
+
+  /* Public page card */
+  .public-card {
+    background-color: hsl(var(--public-card));
+    color: hsl(var(--public-card-foreground));
+    border-radius: var(--public-radius);
+    border: 1px solid hsl(var(--public-border));
+  }
+
+  /* Public page button - primary gradient */
+  .public-btn-primary {
+    background: linear-gradient(to right, hsl(221 83% 53%), hsl(250 63% 58%));
+    color: white;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.25);
+    transition: all 0.2s ease;
+  }
+
+  .public-btn-primary:hover {
+    background: linear-gradient(to right, hsl(221 83% 48%), hsl(250 63% 53%));
+    box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.3);
+    transform: translateY(-1px);
+  }
+
+  /* Public page button - outline */
+  .public-btn-outline {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.2s ease;
+  }
+
+  .public-btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .dark .public-btn-outline {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Public page input styling */
+  .public-input {
+    background-color: hsl(var(--public-background));
+    border: 1px solid hsl(var(--public-input));
+    border-radius: calc(var(--public-radius) - 4px);
+    padding: 0.75rem 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .public-input:focus {
+    border-color: hsl(var(--public-ring));
+    box-shadow: 0 0 0 3px hsl(var(--public-ring) / 0.15);
+    outline: none;
+  }
+}
+
+/* Service Card Animations for Public Pages */
+@keyframes public-float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes public-fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.public-service-card {
+  animation: public-fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.group:hover .public-service-card-image {
+  animation: public-float 3s ease-in-out infinite;
+}
+
+/* ========================================
+   LEGACY STYLES BELOW - DO NOT REMOVE
+   These are used by post-login pages
+   ======================================== */
+
+/* Dark Mode Color System */
+:root {
+  /* Light mode colors */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --border-default: #e2e8f0;
+  --border-subtle: #f1f5f9;
+}
+
+.dark {
+  /* Dark mode colors - Premium slate palette */
+  --bg-primary: #0f172a;
+  /* Deep navy - main background */
+  --bg-secondary: #1e293b;
+  /* Slate 800 - cards */
+  --bg-tertiary: #334155;
+  /* Slate 700 - elevated surfaces */
+  --text-primary: #f1f5f9;
+  /* Slate 100 - primary text */
+  --text-secondary: #94a3b8;
+  /* Slate 400 - secondary text */
+  --text-muted: #64748b;
+  /* Slate 500 - muted text */
+  --border-default: #334155;
+  /* Slate 700 - borders */
+  --border-subtle: #1e293b;
+  /* Slate 800 - subtle borders */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* Custom scrollbar - Unified slate theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #475569 0%, #334155 100%);
+  border-radius: 5px;
+  border: 2px solid #f1f5f9;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #475569 0%, #334155 100%);
+  border: 2px solid #1e293b;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+}
+
+/* Utility classes */
+.container-custom {
+  width: 100%;
+  margin: 0;
+  padding: 0 1rem;
+  /* Reduced padding for mobile - was 3rem */
+}
+
+@media (min-width: 640px) {
+  .container-custom {
+    padding: 0 1.5rem;
+    /* Slightly more on tablets */
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-custom {
+    padding: 0 2rem;
+    /* More comfortable padding on desktop */
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-custom {
+    padding: 0 2.5rem;
+    /* Larger screens get a bit more */
+  }
+}
+
+/* ========================================
+   PREMIUM DARK MODE UTILITY CLASSES
+   ======================================== */
+
+/* Dark mode card with subtle gradient border */
+.dark-card {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid rgba(71, 85, 105, 0.5);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.dark-card:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.15);
+}
+
+/* Dark glass effect for inner cells */
+.dark .glass-cell {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(71, 85, 105, 0.4);
+}
+
+/* Stat card styling for dark mode */
+.dark .stat-card {
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid rgba(71, 85, 105, 0.4);
+}
+
+.dark .stat-card:hover {
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.1);
+}
+
+/* Inner cell - darker than card */
+.dark .inner-cell {
+  background: rgba(2, 6, 23, 0.6);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+}
+
+/* Premium accent glow */
+.dark .accent-glow {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+}
+
+/* Icon container for dark mode */
+.dark .icon-box {
+  background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+  border: 1px solid rgba(71, 85, 105, 0.5);
+}
+
+/* ========================================
+   PREMIUM INTERACTION ENHANCEMENTS
+   ======================================== */
+
+/* Card hover lift effect */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dark .card-hover:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* Premium form focus states */
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+  outline: none !important;
+}
+
+.dark input:focus,
+.dark select:focus,
+.dark textarea:focus {
+  border-color: #818cf8 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
+}
+
+/* Table row hover with accent border */
+.table-row-hover {
+  transition: all 0.15s ease;
+  border-left: 3px solid transparent;
+}
+
+.table-row-hover:hover {
+  border-left-color: #6366f1;
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.dark .table-row-hover:hover {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+/* Glass morphism card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(139, 92, 246, 0.15);
+  position: relative;
+  z-index: 1;
+}
+
+.glass-card:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(139, 92, 246, 0.2);
+}
+
+/* Premium gradient text */
+.premium-gradient {
+  background: linear-gradient(135deg, #a855f7 0%, #22d3ee 50%, #f59e0b 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient 8s ease infinite;
+}
+
+/* Animated background gradients */
+.bg-animated-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 25%, #e0e7ff 50%, #f1f5f9 75%, #ffffff 100%);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+/* Particle grid background */
+.particle-bg {
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 40%);
+}
+
+/* Premium button glow */
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-glow::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-glow:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Shimmer effect for loading states */
+.shimmer {
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0) 100%);
+  background-size: 200% 100%;
+}
+
+/* Voltage Button - Animated Electric Effect (From Uiverse.io by Pradeepsaranbishnoi) */
+.voltage-button {
+  position: relative;
+  display: inline-block;
+}
+
+.voltage-button button {
+  color: white;
+  background: linear-gradient(0deg,
+      rgba(77, 54, 208, 1) 0%,
+      rgba(132, 116, 254, 1) 100%);
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  border: 1px solid #5978F3;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1em;
+  letter-spacing: 0.075em;
+  transition: background 0.3s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.voltage-button button:hover {
+  background: linear-gradient(0deg,
+      rgba(60, 40, 180, 1) 0%,
+      rgba(110, 94, 240, 1) 100%);
+}
+
+/* Small voltage button variant */
+.voltage-button-sm button {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.8rem;
+}
+
+/* Extra small voltage button variant */
+.voltage-button-xs button {
+  padding: 0.375rem 0.875rem;
+  font-size: 0.7rem;
+}
+
+/* Medium voltage button variant */
+.voltage-button-md button {
+  padding: 0.625rem 1.5rem;
+  font-size: 0.75rem;
+}
+
+/* Navigation button variant - same as md but can be overridden if needed */
+.voltage-button-nav button {
+  padding: 0.625rem 1.5rem;
+  font-size: 0.9rem;
+}
+
+/* removed voltage button decorative animations */
+
+/* Gradient Button - Simplified style without animation */
+.gradient-btn {
+  color: white;
+  background: linear-gradient(0deg,
+      rgba(77, 54, 208, 1) 0%,
+      rgba(132, 116, 254, 1) 100%);
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #5978F3;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1em;
+  letter-spacing: 0.025em;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.gradient-btn:hover {
+  background: linear-gradient(0deg,
+      rgba(60, 40, 180, 1) 0%,
+      rgba(110, 94, 240, 1) 100%);
+}
+
+.gradient-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.gradient-btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+}
+
+/* Pulse line animation for How It Works connectors */
+.pulse-line {
+  animation: pulse-line 3s ease-in-out infinite;
+}
+
+@keyframes pulse-line {
+
+  0%,
+  100% {
+    opacity: 0.6;
+    box-shadow: 0 0 0 rgba(167, 139, 250, 0);
+  }
+
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 8px rgba(167, 139, 250, 0.6);
+  }
+}
+
+/* Z-index management */
+.z-base {
+  z-index: 1;
+}
+
+.z-content {
+  z-index: 10;
+}
+
+.z-overlay {
+  z-index: 20;
+}
+
+.z-modal {
+  z-index: 30;
+}
+
+.z-nav {
+  z-index: 40;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Gaming Controller Shaped Button */
+/* Gaming Controller Shaped Button - Refined based on uploaded image */
+.gaming-controller-btn-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.gaming-controller-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Controller body - the unified shape */
+.controller-body {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 6px 0 #3b0764);
+  transition: transform 0.1s ease, filter 0.1s ease;
+}
+
+/* Controller handles (left and right grips) designed to look like the image */
+.controller-handle {
+  width: 28px;
+  height: 60px;
+  background: #6d28d9;
+  /* Base purple color matching image */
+  position: relative;
+  z-index: 2;
+}
+
+/* Left handle - rounded cap */
+.controller-handle-left {
+  border-radius: 30px 0 0 30px;
+  margin-right: -2px;
+  /* Slight overlap to ensure no gaps */
+  box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow for depth */
+}
+
+/* Right handle - rounded cap */
+.controller-handle-right {
+  border-radius: 0 30px 30px 0;
+  margin-left: -2px;
+  /* Slight overlap */
+  box-shadow: inset 2px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Center part with text - main body */
+.controller-center {
+  height: 50px;
+  /* Slightly shorter than handles to give that "grip" look */
+  background: #6d28d9;
+  padding: 0 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* 3D gradient overlay for the whole shape */
+.controller-body::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg,
+      rgba(167, 139, 250, 0.2) 0%,
+      rgba(109, 40, 217, 0) 40%,
+      rgba(76, 29, 149, 0.3) 100%);
+  border-radius: 30px;
+  /* Adapts to shape conceptually */
+  pointer-events: none;
+  z-index: 10;
+}
+
+.controller-text {
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #fff;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
+/* Hover effects */
+.gaming-controller-btn:hover .controller-body {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 8px 0 #3b0764);
+}
+
+.gaming-controller-btn:hover .controller-handle,
+.gaming-controller-btn:hover .controller-center {
+  background: #7c3aed;
+  /* Lighter purple on hover */
+}
+
+/* Active/pressed state */
+.gaming-controller-btn:active .controller-body {
+  transform: translateY(4px);
+  filter: drop-shadow(0 2px 0 #3b0764);
+}
+
+/* Star Ring Border */
+.controller-border-glow {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  z-index: 0;
+  border-radius: 34px;
+  /* Matches button shape roughly */
+  background: transparent;
+  pointer-events: none;
+}
+
+/* Using pseudo-elements to create sparkles at the border */
+.controller-border-glow::before,
+.controller-border-glow::after {
+  content: '✨';
+  position: absolute;
+  font-size: 1rem;
+  animation: star-travel 3s linear infinite;
+  opacity: 0;
+}
+
+.controller-border-glow::after {
+  animation-delay: 1.5s;
+}
+
+.gaming-controller-btn-wrapper:hover .controller-border-glow::before,
+.gaming-controller-btn-wrapper:hover .controller-border-glow::after {
+  opacity: 1;
+}
+
+/* Inner glow */
+.controller-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140%;
+  height: 140%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.gaming-controller-btn:hover .controller-glow {
+  opacity: 1;
+}
+
+/* Particle effects - floating globe style */
+.controller-particles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.ctrl-particle {
+  position: absolute;
+  font-size: 1rem;
+  opacity: 0;
+}
+
+.gaming-controller-btn-wrapper:hover .ctrl-particle-1 {
+  animation: orbit-1 3s linear infinite;
+}
+
+.gaming-controller-btn-wrapper:hover .ctrl-particle-2 {
+  animation: orbit-2 4s linear infinite;
+}
+
+.gaming-controller-btn-wrapper:hover .ctrl-particle-3 {
+  animation: orbit-3 3.5s linear infinite;
+}
+
+.gaming-controller-btn-wrapper:hover .ctrl-particle-4 {
+  animation: orbit-4 4.5s linear infinite;
+}
+
+@keyframes star-travel {
+  0% {
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  25% {
+    top: 0;
+    left: 100%;
+  }
+
+  50% {
+    top: 100%;
+    left: 100%;
+  }
+
+  75% {
+    top: 100%;
+    left: 0;
+  }
+
+  100% {
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes orbit-1 {
+  0% {
+    transform: rotate(0deg) translateX(60px) rotate(0deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: rotate(360deg) translateX(60px) rotate(-360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes orbit-2 {
+  0% {
+    transform: rotate(180deg) translateX(70px) rotate(-180deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: rotate(540deg) translateX(70px) rotate(-540deg);
+    opacity: 0;
+  }
+}
+
+@keyframes orbit-3 {
+  0% {
+    transform: rotate(90deg) translateX(65px) rotate(-90deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: rotate(450deg) translateX(65px) rotate(-450deg);
+    opacity: 0;
+  }
+}
+
+@keyframes orbit-4 {
+  0% {
+    transform: rotate(270deg) translateX(55px) rotate(-270deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: rotate(630deg) translateX(55px) rotate(-630deg);
+    opacity: 0;
+  }
+}
+
+/* Animated Auth Card with Floating Gold Border */
+.animated-auth-card {
+  position: relative;
+  width: 100%;
+  max-width: 512px;
+  margin: 0 auto;
+  border-radius: 14px;
+  z-index: 1;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    8px 8px 24px rgba(180, 180, 180, 0.3),
+    -8px -8px 24px rgba(255, 255, 255, 0.8);
+  padding: 2px;
+  /* Space for the animated border */
+  background: conic-gradient(from var(--border-angle, 0deg),
+      #0ea5e9 0deg,
+      #10b981 60deg,
+      #06b6d4 120deg,
+      #ffffff 180deg,
+      #06b6d4 240deg,
+      #10b981 300deg,
+      #0ea5e9 360deg);
+  animation: rotate-border 3s linear infinite;
+}
+
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotate-border {
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+/* Fallback animation for browsers that don't support @property */
+@supports not (background: conic-gradient(from var(--border-angle, 0deg), red, blue)) {
+  .animated-auth-card {
+    animation: rotate-border-fallback 3s linear infinite;
+  }
+
+  @keyframes rotate-border-fallback {
+    0% {
+      background: linear-gradient(0deg, #0ea5e9, #10b981, #0ea5e9);
+    }
+
+    25% {
+      background: linear-gradient(90deg, #0ea5e9, #10b981, #0ea5e9);
+    }
+
+    50% {
+      background: linear-gradient(180deg, #0ea5e9, #10b981, #0ea5e9);
+    }
+
+    75% {
+      background: linear-gradient(270deg, #0ea5e9, #10b981, #0ea5e9);
+    }
+
+    100% {
+      background: linear-gradient(360deg, #0ea5e9, #10b981, #0ea5e9);
+    }
+  }
+}
+
+.animated-auth-card .bg {
+  position: relative;
+  width: 100%;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 11px;
+  overflow: visible;
+  padding: 1.5rem;
+  box-shadow:
+    0 8px 32px rgba(14, 165, 233, 0.15),
+    0 2px 8px rgba(6, 182, 212, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Hide the blob element if present */
+.animated-auth-card .blob {
+  display: none;
+}
+
+/* Floating animation for particles inside cards */
+@keyframes animate-float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: animate-float 6s ease-in-out infinite;
+}
+
+/* Slide up fade animation */
+@keyframes slide-up-fade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up-fade {
+  animation: slide-up-fade 0.6s ease-out forwards;
+}
+
+/* ========================================
+   TOAST ANIMATIONS (PWA User Feedback)
+   ======================================== */
+
+/* Slide in from right */
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out forwards;
+}
+
+/* Slide out to right */
+@keyframes slide-out-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.animate-slide-out-right {
+  animation: slide-out-right 0.3s ease-in forwards;
+}
