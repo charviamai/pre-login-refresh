@@ -1,0 +1,389 @@
+/* ========================================
+   ArcadeX vs Others - PREMIUM BEAUTY OVERHAUL
+   ======================================== */
+
+.comparison-section {
+  padding: 10px 20px 80px 20px;
+  /* Reduced top padding */
+  background: #ffffff;
+}
+
+.dark .comparison-section {
+  background: #0f172a;
+}
+
+.comparison-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.comparison-section .section-header {
+  text-align: center;
+  margin-bottom: 24px;
+  /* Added space after title */
+}
+
+.comparison-section .section-title {
+  font-size: 26px;
+  /* Standardized to 26px (22+4) */
+  font-weight: 700;
+  color: #1e293b;
+  letter-spacing: -0.02em;
+}
+
+.section-title .vs {
+  font-size: 0.7em;
+  /* Slightly smaller from 0.8em */
+  color: #94a3b8;
+  font-weight: 500;
+  margin: 0 4px;
+}
+
+.dark .comparison-section .section-title {
+  color: #f8fafc;
+}
+
+/* Base Layout */
+.comparison-table {
+  background: transparent;
+  position: relative;
+}
+
+.comparison-header {
+  display: grid;
+  grid-template-columns: 1fr 120px 1fr;
+  align-items: center;
+  margin-bottom: 10px;
+  /* Reduced from 40px */
+  background: transparent !important;
+}
+
+.header-column {
+  padding: 5px 0;
+}
+
+.header-spacer {
+  width: 120px;
+  /* Must match the grid middle column */
+}
+
+.arcadex-header {
+  text-align: center;
+  padding: 0;
+}
+
+.others-header {
+  text-align: center;
+  padding: 0;
+}
+
+.header-column h3 {
+  font-size: 1rem;
+  /* Standardized and reduced from 1.1rem */
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.arcadex-header h3 {
+  color: #4f46e5;
+  background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.others-header h3 {
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+/* Comparison Rows */
+.comparison-row {
+  display: grid;
+  grid-template-columns: 1fr 120px 1fr;
+  min-height: 70px;
+  /* Increased for more breathing room */
+  align-items: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  /* Increased from 2px for better separation */
+  background: rgba(248, 250, 252, 0.3);
+  /* Added very subtle base background */
+  border: 1px solid transparent;
+}
+
+.dark .comparison-row {
+  background: rgba(30, 41, 59, 0.1);
+}
+
+.comparison-row:hover {
+  background: rgba(248, 250, 252, 0.9);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  border-color: #f1f5f9;
+}
+
+.dark .comparison-row:hover {
+  background: rgba(30, 41, 59, 0.5);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+}
+
+/* Central Divider */
+.central-divider {
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.divider-line {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: #cfd7e2;
+  /* Darkened from #f1f5f9 to make it more visible */
+  z-index: 1;
+}
+
+.dark .divider-line {
+  background: #334155;
+  /* Slightly darkened for dark mode as well for consistency */
+}
+
+.divider-icon {
+  width: 32px;
+  /* Reduced from 40px */
+  height: 32px;
+  background: white;
+  border: 1px solid #f1f5f9;
+  color: #4f46e5;
+  border-radius: 8px;
+  /* Slightly tighter radius */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.dark .divider-icon {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+.comparison-row:hover .divider-icon {
+  transform: scale(1.1) rotate(5deg);
+  background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+  color: white;
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+  border-color: transparent;
+}
+
+.divider-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.divider-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #cbd5e1;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+/* Cells & Content */
+.cell-content {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  /* Tightened further */
+}
+
+.arcadex-cell .cell-content {
+  justify-content: center;
+  padding: 0;
+}
+
+.others-cell .cell-content {
+  justify-content: center;
+  padding: 0;
+}
+
+.text-wrapper {
+  width: 320px;
+  /* Slightly wider for better text flow */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  /* Increased from 2px for vertical breathing room */
+}
+
+/* Typography */
+.arcadex-cell {
+  text-align: left;
+  color: #1e293b;
+  font-weight: 400;
+  font-size: 0.93rem;
+}
+
+.dark .arcadex-cell {
+  color: #f1f5f9;
+}
+
+.others-cell {
+  text-align: left;
+  color: #64748b;
+  font-weight: 400;
+  font-size: 0.88rem;
+}
+
+.muted-cross {
+  color: #cbd5e1;
+  font-weight: 400;
+  margin-right: 8px;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.premium-check {
+  color: #cbd5e1;
+  /* Subtle, light grey instead of vibrant blue */
+  font-weight: 500;
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+.comparison-row:hover .muted-cross {
+  color: #94a3b8;
+}
+
+.value-item {
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+/* Responsive Utility Blocks */
+@media (min-width: 769px) {
+  .mobile-only-comparison {
+    display: none;
+  }
+}
+
+/* CTA Styles */
+.comparison-cta {
+  margin-top: 30px;
+  /* Reduced from 70px */
+  text-align: center;
+}
+
+.comparison-cta .cta-button {
+  background: #0f172a;
+  color: white;
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px -5px rgba(15, 23, 42, 0.3);
+}
+
+.dark .comparison-cta .cta-button {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.comparison-cta .cta-button:hover {
+  background: #4f46e5;
+  color: white;
+}
+
+.comparison-cta .cta-subtitle {
+  margin-top: 16px;
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .comparison-section {
+    padding: 20px 16px;
+  }
+
+  .comparison-section .section-header {
+    margin-bottom: 12px;
+    /* Reduced gap after title on mobile */
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only-comparison {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* Reduced from 24px to bring blocks closer */
+  }
+
+  .mobile-block {
+    background: rgba(248, 250, 252, 0.4);
+    border-radius: 12px;
+    padding: 24px 20px;
+    border: 1px solid #f1f5f9;
+  }
+
+  .dark .mobile-block {
+    background: rgba(30, 41, 59, 0.2);
+    border-color: #1e293b;
+  }
+
+  .mobile-block-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .arcadex-block .mobile-block-title {
+    color: #4f46e5;
+  }
+
+  .others-block .mobile-block-title {
+    color: #94a3b8;
+  }
+
+  .mobile-points-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .mobile-point {
+    font-size: 0.9rem;
+    color: #334155;
+    line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .dark .mobile-point {
+    color: #cbd5e1;
+  }
+
+  .mobile-point.muted {
+    color: #64748b;
+    font-size: 0.88rem;
+  }
+}
