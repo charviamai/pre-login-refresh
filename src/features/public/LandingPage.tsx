@@ -1,59 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { PublicLayout } from '../../shared/components/layout/PublicLayout';
 import { PublicButton } from '../../shared/components/ui/PublicButton';
-import { PublicThemeToggle } from '../../shared/components/layout/PublicThemeToggle';
-import { ComparisonSection } from './comparison/ComparisonSection';
+import { StarryBackground } from '../../shared/components/layout/StarryBackground';
 
 export const LandingPage: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<number | null>(1);
   const navigate = useNavigate();
-
-  // Features Carousel State
-  const [featuresPage, setFeaturesPage] = useState(1); // Start at 1 (first real page)
-  const [featuresDragging, setFeaturesDragging] = useState(false);
-  const [featuresDragStart, setFeaturesDragStart] = useState({ x: 0, time: 0 });
-  const [featuresDragOffset, setFeaturesDragOffset] = useState(0);
-  const [featuresHovered, setFeaturesHovered] = useState(false);
-  const [featuresTransitioning, setFeaturesTransitioning] = useState(true);
-  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  const [activeFeature, setActiveFeature] = useState(0);
   const featuresAutoScrollRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Testimonials Carousel State
-  const [testimonialsIndex, setTestimonialsIndex] = useState(0);
-  const [testimonialsDragging, setTestimonialsDragging] = useState(false);
-  const [testimonialsDragStart, setTestimonialsDragStart] = useState({ x: 0, time: 0 });
-  const [testimonialsDragOffset, setTestimonialsDragOffset] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(true);
-  const testimonialsAutoScrollRef = useRef<NodeJS.Timeout | null>(null);
-
-  const isMobile = windowWidth < 768;
-  const featuresCardsPerPage = isMobile ? 2 : 4;
-  const testimonialsVisibleCount = isMobile ? 2 : 3;
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Window resize handler
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Reset carousel positions on breakpoint change
-  useEffect(() => {
-    setFeaturesPage(0);
-  }, [isMobile]);
 
   // Features data
   const features = [
@@ -109,70 +63,10 @@ export const LandingPage: React.FC = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       ),
-      title: 'Workforce & Schedule Automation',
+      title: 'Workforce Automation',
       description: 'Optimize your team with integrated scheduling, time tracking, and performance monitoring tailored for arcade floors.'
     },
-    {
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
-        </svg>
-      ),
-      title: 'Dynamic Rewards Engine',
-      description: 'Automate prize inventory and redemption workflows. Configure points, tiers, and personalized rewards to drive loyalty.'
-    },
-    {
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-        </svg>
-      ),
-      title: 'Interactive Self-Service Kiosks',
-      description: 'Empower customers with self-service registration, account top-ups, prize browsing, and promotional game play.'
-    }
   ];
-
-  const featuresTotalPages = Math.ceil(features.length / featuresCardsPerPage);
-
-  // Create extended features pages for infinite loop: [last, ...pages, first]
-  const getExtendedFeaturesPages = () => {
-    const pages = Array.from({ length: featuresTotalPages }, (_, i) =>
-      features.slice(i * featuresCardsPerPage, (i + 1) * featuresCardsPerPage)
-    );
-    // Add last page at beginning and first page at end for seamless loop
-    return [pages[pages.length - 1], ...pages, pages[0]];
-  };
-
-  const extendedFeaturesPages = getExtendedFeaturesPages();
-
-  // Handle features carousel transition end for seamless loop
-  const handleFeaturesTransitionEnd = () => {
-    if (featuresPage === 0) {
-      // At clone of last page, jump to real last page
-      setFeaturesTransitioning(false);
-      setFeaturesPage(featuresTotalPages);
-    } else if (featuresPage === featuresTotalPages + 1) {
-      // At clone of first page, jump to real first page
-      setFeaturesTransitioning(false);
-      setFeaturesPage(1);
-    }
-  };
-
-  // Re-enable transition after position jump
-  useEffect(() => {
-    if (!featuresTransitioning) {
-      // Force a reflow before re-enabling transition
-      const timer = setTimeout(() => setFeaturesTransitioning(true), 50);
-      return () => clearTimeout(timer);
-    }
-  }, [featuresTransitioning]);
-
-  // Safety check for featuresPage bounds on resize
-  useEffect(() => {
-    if (featuresPage > featuresTotalPages + 1) {
-      setFeaturesPage(featuresTotalPages);
-    }
-  }, [featuresTotalPages, featuresPage]);
 
   // Testimonials data
   const testimonials = [
@@ -180,266 +74,187 @@ export const LandingPage: React.FC = () => {
       quote: "ArcadeX transformed how we manage our arcade. The digital ticket system alone has saved us thousands in operational costs.",
       author: "Mike Johnson",
       role: "Owner, GameZone Arcade",
-      rating: 5
     },
     {
       quote: "The analytics dashboard gives us insights we never had before. We've increased revenue by 40% in the first 6 months.",
       author: "Sarah Chen",
       role: "Manager, FunPlex Entertainment",
-      rating: 5
     },
     {
       quote: "Customer support is incredible. They helped us migrate all our data and train our staff. Couldn't be happier!",
       author: "David Rodriguez",
       role: "Director, Arcade Kingdom",
-      rating: 5
     },
-    {
-      quote: "The platform's reliability and ease of use have transformed our daily operations. Our staff adapted quickly and customers love the new experience.",
-      author: "Jennifer Martinez",
-      role: "Operations Manager, PlayZone Entertainment",
-      rating: 5
-    },
-    {
-      quote: "Best investment we've made for our arcade. The real-time reporting and customer insights have been game-changers for our business strategy.",
-      author: "Robert Kim",
-      role: "CEO, Ultimate Arcade Center",
-      rating: 5
-    }
   ];
 
-  // Create extended array for infinite loop
-  const getExtendedTestimonials = () => {
-    if (isMobile) {
-      return [testimonials[testimonials.length - 1], ...testimonials, testimonials[0]];
-    } else {
-      return [
-        ...testimonials.slice(-testimonialsVisibleCount),
-        ...testimonials,
-        ...testimonials.slice(0, testimonialsVisibleCount)
-      ];
-    }
-  };
+  // Pricing plans
+  const pricingPlans = [
+    {
+      name: 'Starter',
+      price: '$99',
+      period: '/month',
+      description: 'Perfect for single-location arcades',
+      features: ['Up to 50 machines', 'Basic analytics', 'Email support', 'Digital ticketing'],
+      highlighted: false,
+    },
+    {
+      name: 'Professional',
+      price: '$299',
+      period: '/month',
+      description: 'For growing entertainment centers',
+      features: ['Unlimited machines', 'Advanced analytics', 'Priority support', 'All integrations', 'Multi-site dashboard'],
+      highlighted: true,
+    },
+    {
+      name: 'Enterprise',
+      price: 'Custom',
+      period: '',
+      description: 'For large-scale operations',
+      features: ['Everything in Pro', 'Dedicated account manager', 'Custom integrations', 'SLA guarantee', 'On-site training'],
+      highlighted: false,
+    },
+  ];
 
-  const extendedTestimonials = getExtendedTestimonials();
-
-  // Features Carousel Auto-scroll (pauses on hover) - always moves forward
+  // Auto-rotate features
   useEffect(() => {
-    if (featuresAutoScrollRef.current) {
-      clearInterval(featuresAutoScrollRef.current);
-    }
-
-    if (!featuresHovered) {
-      featuresAutoScrollRef.current = setInterval(() => {
-        setFeaturesPage((prev) => prev + 1); // Always increment, loop handled by transition-end
-      }, 5000);
-    }
+    featuresAutoScrollRef.current = setInterval(() => {
+      setActiveFeature((prev) => (prev + 1) % features.length);
+    }, 4000);
 
     return () => {
       if (featuresAutoScrollRef.current) {
         clearInterval(featuresAutoScrollRef.current);
       }
     };
-  }, [featuresHovered]);
-
-  // Testimonials Carousel Auto-scroll
-  useEffect(() => {
-    const startIndex = isMobile ? 1 : testimonialsVisibleCount;
-    setTestimonialsIndex(startIndex);
-
-    if (testimonialsAutoScrollRef.current) {
-      clearInterval(testimonialsAutoScrollRef.current);
-    }
-
-    testimonialsAutoScrollRef.current = setInterval(() => {
-      setTestimonialsIndex((prev) => prev + 1);
-    }, 4000);
-
-    return () => {
-      if (testimonialsAutoScrollRef.current) {
-        clearInterval(testimonialsAutoScrollRef.current);
-      }
-    };
-  }, [isMobile, testimonialsVisibleCount]);
-
-  // Handle Features Carousel Drag
-  const handleFeaturesDragStart = (clientX: number) => {
-    setFeaturesDragging(true);
-    setFeaturesDragStart({ x: clientX, time: Date.now() });
-    if (featuresAutoScrollRef.current) {
-      clearInterval(featuresAutoScrollRef.current);
-    }
-  };
-
-  const handleFeaturesDragMove = (clientX: number) => {
-    if (!featuresDragging) return;
-    const offset = clientX - featuresDragStart.x;
-    setFeaturesDragOffset(offset);
-  };
-
-  const handleFeaturesDragEnd = (clientX: number) => {
-    if (!featuresDragging) return;
-
-    const offset = clientX - featuresDragStart.x;
-    const SWIPE_THRESHOLD = 50;
-
-    if (Math.abs(offset) > SWIPE_THRESHOLD) {
-      if (offset > 0) {
-        setFeaturesPage((prev) => (prev - 1 + featuresTotalPages) % featuresTotalPages);
-      } else {
-        setFeaturesPage((prev) => (prev + 1) % featuresTotalPages);
-      }
-    }
-
-    setFeaturesDragging(false);
-    setFeaturesDragOffset(0);
-
-    // Restart auto-scroll
-    if (featuresAutoScrollRef.current) {
-      clearInterval(featuresAutoScrollRef.current);
-    }
-    featuresAutoScrollRef.current = setInterval(() => {
-      setFeaturesPage((prev) => prev + 1);
-    }, 5000);
-  };
-
-  // Handle Testimonials Carousel Drag
-  const handleTestimonialsDragStart = (clientX: number) => {
-    setTestimonialsDragging(true);
-    setTestimonialsDragStart({ x: clientX, time: Date.now() });
-    if (testimonialsAutoScrollRef.current) {
-      clearInterval(testimonialsAutoScrollRef.current);
-    }
-  };
-
-  const handleTestimonialsDragMove = (clientX: number) => {
-    if (!testimonialsDragging) return;
-    const offset = clientX - testimonialsDragStart.x;
-    setTestimonialsDragOffset(offset);
-  };
-
-  const handleTestimonialsDragEnd = (clientX: number) => {
-    if (!testimonialsDragging) return;
-
-    const offset = clientX - testimonialsDragStart.x;
-    const SWIPE_THRESHOLD = 50;
-
-    if (Math.abs(offset) > SWIPE_THRESHOLD) {
-      if (offset > 0) {
-        setTestimonialsIndex((prev) => prev - 1);
-      } else {
-        setTestimonialsIndex((prev) => prev + 1);
-      }
-    }
-
-    setTestimonialsDragging(false);
-    setTestimonialsDragOffset(0);
-
-    // Restart auto-scroll
-    if (testimonialsAutoScrollRef.current) {
-      clearInterval(testimonialsAutoScrollRef.current);
-    }
-    testimonialsAutoScrollRef.current = setInterval(() => {
-      setTestimonialsIndex((prev) => prev + 1);
-    }, 4000);
-  };
-
-  // Handle testimonials infinite loop transition
-  const handleTestimonialsTransitionEnd = () => {
-    const maxIndex = extendedTestimonials.length - testimonialsVisibleCount;
-    const minIndex = isMobile ? 1 : testimonialsVisibleCount;
-
-    if (testimonialsIndex >= maxIndex) {
-      setIsTransitioning(false);
-      setTestimonialsIndex(minIndex);
-      setTimeout(() => setIsTransitioning(true), 50);
-    } else if (testimonialsIndex <= (isMobile ? 0 : testimonialsVisibleCount - 1)) {
-      setIsTransitioning(false);
-      setTestimonialsIndex(maxIndex - 1);
-      setTimeout(() => setIsTransitioning(true), 50);
-    }
-  };
+  }, [features.length]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-violet-50 to-cyan-50">
-      {/* Navigation */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled
-          ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-violet-100'
-          : 'bg-transparent'
-          }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-1 sm:space-x-2">
-              <img src="/logo.png" alt="ArcadeX" className="max-h-8 sm:max-h-10" />
-              <div className="flex flex-col">
-                <span className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent leading-none">
-                  ArcadeX
-                </span>
-                <span className="text-[8px] sm:text-[10px] font-medium text-slate-500 tracking-wide mt-0 leading-none">@ Charaviam Product</span>
-              </div>
+    <PublicLayout>
+      {/* Hero Section with Starry Background */}
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+        {/* Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-indigo-950 to-purple-950" />
+        <StarryBackground />
+
+        {/* Gradient Orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="text-center space-y-8">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/90 text-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
+              </span>
+              Now serving 500+ arcade centers worldwide
             </div>
-            <div className="flex items-center gap-4 sm:gap-6">
-              <button
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
-              >
-                Home
-              </button>
-              <button
-                onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
-                className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
-              >
-                About Us
-              </button>
-              <button
-                onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-                className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
-              >
-                Services
-              </button>
-              <button
-                onClick={() => navigate('/signup')}
-                className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
-              >
-                Contact
-              </button>
+
+            {/* Main Heading */}
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
+              <span className="block">Intelligent Solutions</span>
+              <span className="block bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                for Modern Arcades
+              </span>
+            </h1>
+
+            {/* Subtitle */}
+            <p className="max-w-2xl mx-auto text-lg md:text-xl text-slate-300">
+              One platform. Total control. ArcadeX unifies digital ticketing, biometric check-ins,
+              workforce management, and real-time insights to drive loyalty and maximize revenue.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+              <PublicButton variant="primary" size="lg" href="/signup">
+                Start Free Trial
+                <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </PublicButton>
+              <PublicButton variant="outline" size="lg" href="/login">
+                Sign In
+              </PublicButton>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="pt-12 flex flex-wrap justify-center items-center gap-8 text-slate-400 text-sm">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                No credit card required
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                14-day free trial
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                Cancel anytime
+              </div>
             </div>
           </div>
         </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-10 px-4 sm:px-6 lg:px-8 overflow-hidden bg-white">
-        <div className="particle-bg absolute inset-0 opacity-30" />
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <svg className="w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </div>
+      </section>
 
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="grid md:grid-cols-12 gap-8 items-center relative">
-            {/* Left Column - Content */}
-            <div className="md:col-span-7 space-y-6">
-              <h1 className="text-xl md:text-3xl md:leading-tight font-bold animate-slide-up-fade">
-                <span className="bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
-                  Elevate Your Gaming Business
-                </span>
-                <br />
-                <span className="text-slate-800">with ArcadeX Platform</span>
-              </h1>
-              <p className="text-base text-slate-600 animate-slide-up-fade" style={{ animationDelay: '0.1s' }}>
-                One platform. Total control. ArcadeX unifies digital ticketing, biometric check-ins,
-                workforce management, real-time insights, and engaging kiosk for promotional games,
-                all from a powerful centralized dashboard designed to drive loyalty and maximize revenue.
+      {/* About Section */}
+      <section id="about" className="py-20 bg-white dark:bg-slate-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <span className="text-indigo-600 dark:text-indigo-400 font-semibold text-sm uppercase tracking-wider">
+                About ArcadeX
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
+                Built by Arcade Operators, for Arcade Operators
+              </h2>
+              <p className="text-lg text-slate-600 dark:text-slate-300">
+                We understand the unique challenges of running an entertainment center because we've been there.
+                ArcadeX was born from years of hands-on experience managing arcade floors, dealing with ticket
+                jams, and wishing for better data insights.
               </p>
+              <div className="grid grid-cols-2 gap-6 pt-4">
+                <div className="text-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800">
+                  <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">500+</div>
+                  <div className="text-sm text-slate-600 dark:text-slate-400">Arcades Powered</div>
+                </div>
+                <div className="text-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800">
+                  <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">2M+</div>
+                  <div className="text-sm text-slate-600 dark:text-slate-400">Customers Served</div>
+                </div>
+                <div className="text-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800">
+                  <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">99.9%</div>
+                  <div className="text-sm text-slate-600 dark:text-slate-400">Uptime SLA</div>
+                </div>
+                <div className="text-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800">
+                  <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">24/7</div>
+                  <div className="text-sm text-slate-600 dark:text-slate-400">Support</div>
+                </div>
+              </div>
             </div>
-
-            {/* Right Column - Dashboard Preview */}
-            <div className="md:col-span-5 glass-card rounded-2xl p-6 animate-slide-up-fade" style={{ animationDelay: '0.3s' }}>
-              <div className="aspect-video bg-gradient-to-br from-purple-100 to-cyan-100 rounded-xl flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-200/50 via-transparent to-transparent animate-pulse" />
-                <div className="relative z-10 text-center p-8">
-                  <div className="text-5xl mb-4">🎮</div>
-                  <h3 className="text-base font-bold text-slate-800 mb-2">Platform Dashboard Preview</h3>
-                  <p className="text-sm text-slate-600">Real-time analytics • Management • Ticket tracking</p>
+            <div className="relative">
+              <div className="aspect-video rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 p-1">
+                <div className="w-full h-full rounded-xl bg-slate-900 flex items-center justify-center">
+                  <div className="text-center text-white">
+                    <svg className="w-16 h-16 mx-auto mb-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p className="text-sm opacity-70">Watch Demo Video</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -447,524 +262,188 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Why ArcadeX Section */}
-      <section id="about" className="pt-4 pb-10 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-[26px] font-bold text-slate-800 mb-4">
-            Why ArcadeX?
-          </h2>
-          <p className="text-base text-slate-600 mb-4 max-w-4xl mx-auto">
-            Most arcades rely on legacy systems, paper tickets, and disconnected tools, but ArcadeX replaces all of that with a purpose-built platform that consolidates every operational function into one secure, scalable, and modern solution.
-          </p>
-
-          {/* Styled Quote Block */}
-          <div className="bg-gradient-to-r from-purple-50 to-cyan-50 border-l-4 border-purple-500 py-3 px-6 mb-4 max-w-3xl mx-auto rounded-r-lg">
-            <p className="text-base text-slate-800 font-medium italic">
-              "ArcadeX is not just software. It's the infrastructure for sustainable arcade growth."
+      {/* Features Section */}
+      <section id="services" className="py-20 bg-slate-50 dark:bg-slate-950">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="text-indigo-600 dark:text-indigo-400 font-semibold text-sm uppercase tracking-wider">
+              Features
+            </span>
+            <h2 className="mt-2 text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
+              Everything You Need to Run Your Arcade
+            </h2>
+            <p className="mt-4 text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              From digital ticketing to workforce management, ArcadeX provides a complete solution
+              for modern entertainment centers.
             </p>
           </div>
 
-          <p className="text-base text-slate-600 mb-6 max-w-4xl mx-auto">
-            Whether you operate a single location or a growing network of entertainment venues,
-            ArcadeX gives you the control, visibility, and efficiency to dominate your market.
-          </p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className={`group p-6 rounded-2xl border transition-all duration-300 cursor-pointer ${
+                  activeFeature === index
+                    ? 'bg-gradient-to-br from-indigo-500 to-purple-600 border-transparent text-white shadow-xl shadow-indigo-500/25'
+                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600'
+                }`}
+                onClick={() => setActiveFeature(index)}
+              >
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
+                  activeFeature === index
+                    ? 'bg-white/20'
+                    : 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400'
+                }`}>
+                  {feature.icon}
+                </div>
+                <h3 className={`text-lg font-semibold mb-2 ${
+                  activeFeature === index ? 'text-white' : 'text-slate-900 dark:text-white'
+                }`}>
+                  {feature.title}
+                </h3>
+                <p className={`text-sm ${
+                  activeFeature === index ? 'text-white/80' : 'text-slate-600 dark:text-slate-400'
+                }`}>
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
-            <span className="text-sm font-semibold text-slate-800">
-              Ready to transform your Business?
+      {/* Testimonials Section */}
+      <section className="py-20 bg-white dark:bg-slate-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="text-indigo-600 dark:text-indigo-400 font-semibold text-sm uppercase tracking-wider">
+              Testimonials
             </span>
-            <PublicButton onClick={() => navigate('/signup')} variant="primary" size="lg">
-              Request a Demo
+            <h2 className="mt-2 text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
+              Loved by Arcade Owners Everywhere
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <div
+                key={index}
+                className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+              >
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-600 dark:text-slate-300 mb-6 italic">
+                  "{testimonial.quote}"
+                </p>
+                <div>
+                  <p className="font-semibold text-slate-900 dark:text-white">{testimonial.author}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{testimonial.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 bg-slate-50 dark:bg-slate-950">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="text-indigo-600 dark:text-indigo-400 font-semibold text-sm uppercase tracking-wider">
+              Pricing
+            </span>
+            <h2 className="mt-2 text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
+              Choose the plan that fits your arcade. All plans include a 14-day free trial.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {pricingPlans.map((plan, index) => (
+              <div
+                key={index}
+                className={`relative p-8 rounded-2xl transition-all duration-300 ${
+                  plan.highlighted
+                    ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-2xl shadow-indigo-500/30 scale-105'
+                    : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700'
+                }`}
+              >
+                {plan.highlighted && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-yellow-400 text-yellow-900 text-sm font-semibold rounded-full">
+                    Most Popular
+                  </div>
+                )}
+                <h3 className={`text-xl font-semibold mb-2 ${plan.highlighted ? 'text-white' : 'text-slate-900 dark:text-white'}`}>
+                  {plan.name}
+                </h3>
+                <p className={`text-sm mb-4 ${plan.highlighted ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'}`}>
+                  {plan.description}
+                </p>
+                <div className="mb-6">
+                  <span className={`text-4xl font-bold ${plan.highlighted ? 'text-white' : 'text-slate-900 dark:text-white'}`}>
+                    {plan.price}
+                  </span>
+                  <span className={`text-sm ${plan.highlighted ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'}`}>
+                    {plan.period}
+                  </span>
+                </div>
+                <ul className="space-y-3 mb-8">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <svg className={`w-5 h-5 ${plan.highlighted ? 'text-white' : 'text-green-500'}`} fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      <span className={`text-sm ${plan.highlighted ? 'text-white/90' : 'text-slate-600 dark:text-slate-300'}`}>
+                        {feature}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <PublicButton
+                  variant={plan.highlighted ? 'secondary' : 'primary'}
+                  className="w-full"
+                  href="/signup"
+                >
+                  Get Started
+                </PublicButton>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="relative py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-700" />
+        <StarryBackground />
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            Ready to Transform Your Arcade?
+          </h2>
+          <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
+            Join 500+ arcade operators who have already upgraded to ArcadeX.
+            Start your free trial today and see the difference.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <PublicButton variant="secondary" size="lg" href="/signup">
+              Start Free Trial
+              <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </PublicButton>
+            <PublicButton variant="outline" size="lg" href="/login">
+              Contact Sales
             </PublicButton>
           </div>
         </div>
       </section>
-
-      {/* How It Works Section */}
-      <section id="how-it-works" className="py-10 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-violet-50 to-cyan-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-[26px] font-bold text-slate-800 mb-2">
-              Launch Your Arcade
-            </h2>
-            <p className="text-base text-slate-600 max-w-2xl mx-auto">
-              From setup to launch, ArcadeX gets you operational fast.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-4 gap-8">
-            {[
-              {
-                step: '1',
-                title: 'Onboard',
-                description: 'Create your account, configure locations, and set up staff access.'
-              },
-              {
-                step: '2',
-                title: 'Activate',
-                description: 'Register customers via palm scan, NFC, or phone, creating secure digital identities.'
-              },
-              {
-                step: '3',
-                title: 'Launch',
-                description: 'Kiosks handle check-ins, promotional games, and ticket redemptions.'
-              },
-              {
-                step: '4',
-                title: 'Scale',
-                description: 'Add new locations or devices effortlessly as your business grows.'
-              }
-            ].map((item, index) => (
-              <div key={index} className="text-center relative">
-                {index < 3 && (
-                  <div className="hidden md:block absolute top-6 left-1/2 w-full h-0.5 bg-gradient-to-r from-purple-400 to-cyan-400 pulse-line" />
-                )}
-                <div className="relative z-10 mb-3 mx-auto w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center shadow-lg">
-                  <span className="text-lg font-bold text-white">{item.step}</span>
-                </div>
-                <h3 className="text-lg font-bold text-slate-800 mb-2">{item.title}</h3>
-                <p className="text-sm text-slate-600">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Hardware & Software Section */}
-      <section id="services" className="py-10 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-[26px] font-bold text-slate-800 mb-2">
-              Our Services
-            </h2>
-            <p className="text-base text-slate-600 max-w-4xl mx-auto">
-              ArcadeX unifies hardware and software into a single, powerful ecosystem for total operational control.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Hardware Support Card */}
-            <div className="glass-card rounded-xl p-6 border-l-4 border-purple-500 hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center flex-shrink-0 mr-4 shadow-lg shadow-purple-500/20">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-slate-800">Integrated Hardware</h3>
-              </div>
-              <p className="text-sm text-slate-600 mb-6">
-                Complete hardware solutions engineered for high-traffic reliability and seamless platform integration.
-              </p>
-              <ul className="space-y-3">
-                {[
-                  'Smart POS Management Systems',
-                  'Biometric Verification Device (Palm & NFC)',
-                  'Automated Customer-Facing Kiosks',
-                  'Integrated High-Speed Thermal Printers',
-                  'IoT-Enabled Machine Connectivity Hubs',
-                  'High-Precision QR & Barcode Redemption Scanners'
-                ].map((feature, i) => (
-                  <li key={i} className="flex items-start">
-                    <svg className="w-5 h-5 text-purple-500 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span className="text-slate-700 text-sm font-medium">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Software Card */}
-            <div className="glass-card rounded-xl p-6 border-l-4 border-indigo-500 hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center flex-shrink-0 mr-4 shadow-lg shadow-indigo-500/20">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-slate-800">Intelligent Software</h3>
-              </div>
-              <p className="text-sm text-slate-600 mb-6">
-                A unified management platform that delivers real-time visibility and automated control across your entire organization.
-              </p>
-              <ul className="space-y-3">
-                {[
-                  'Centralized Multi-Tenant Enterprise & Shop Management',
-                  'Unified Customer Identity & Biometric Verifications',
-                  'High-Performance Merchant POS & Operational Suite',
-                  'Advanced Workforce Management & Employee Portal',
-                  'Real-Time Operational Dashboards & Analytics Reports',
-                  'Integrated Kiosk Application & Promotional Gaming Suite',
-                  'Automated Financial, Game Machines & Performance Reporting'
-                ].map((feature, i) => (
-                  <li key={i} className="flex items-start">
-                    <svg className="w-5 h-5 text-indigo-500 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span className="text-slate-700 text-sm font-medium">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Carousel Section */}
-      <section id="features" className="py-10 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-violet-50 to-cyan-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-[26px] font-bold text-slate-800 mb-2">
-              The Arcade Management Suite
-            </h2>
-            <p className="text-base text-slate-600 max-w-4xl mx-auto">
-              Powerful features designed specifically for modern gaming arcades and entertainment centers
-            </p>
-          </div>
-
-          <div
-            className="relative px-4 sm:px-8"
-            style={{ touchAction: 'pan-y' }}
-            onMouseDown={(e) => handleFeaturesDragStart(e.clientX)}
-            onMouseMove={(e) => handleFeaturesDragMove(e.clientX)}
-            onMouseUp={(e) => handleFeaturesDragEnd(e.clientX)}
-            onMouseEnter={() => setFeaturesHovered(true)}
-            onMouseLeave={() => {
-              setFeaturesHovered(false);
-              if (featuresDragging) handleFeaturesDragEnd(featuresDragStart.x);
-            }}
-            onTouchStart={(e) => handleFeaturesDragStart(e.touches[0].clientX)}
-            onTouchMove={(e) => handleFeaturesDragMove(e.touches[0].clientX)}
-            onTouchEnd={(e) => handleFeaturesDragEnd(e.changedTouches[0].clientX)}
-            onDragStart={(e) => e.preventDefault()}
-          >
-            <div className="overflow-hidden py-4">
-              <div
-                className="flex"
-                style={{
-                  transform: `translateX(calc(-${Math.min(Math.max(featuresPage, 0), extendedFeaturesPages.length - 1) * 100}% + ${featuresDragging ? featuresDragOffset : 0}px))`,
-                  transition: featuresDragging || !featuresTransitioning ? 'none' : 'transform 500ms cubic-bezier(0.4, 0, 0.2, 1)',
-                  willChange: 'transform'
-                }}
-                onTransitionEnd={handleFeaturesTransitionEnd}
-              >
-                {extendedFeaturesPages.map((pageFeatures, pageIndex) => (
-                  <div
-                    key={pageIndex}
-                    className="min-w-full grid grid-cols-1 md:grid-cols-2 gap-4 px-4 content-start"
-                  >
-                    {pageFeatures && pageFeatures.map((feature, cardIndex) => (
-                      <div
-                        key={cardIndex}
-                        className="glass-card rounded-xl p-5 hover:scale-[1.02] transition-all duration-300 cursor-pointer group relative z-content"
-                      >
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-50 to-cyan-50 flex items-center justify-center text-purple-600 group-hover:bg-gradient-to-br group-hover:from-purple-500 group-hover:to-cyan-500 group-hover:text-white transition-all duration-300">
-                            <span className="w-6 h-6">{feature.icon}</span>
-                          </div>
-                          <h3 className="text-base font-bold text-slate-800">{feature.title}</h3>
-                        </div>
-                        <p className="text-sm text-slate-600 line-clamp-3">{feature.description}</p>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Pagination Dots */}
-          <div className="flex justify-center items-center gap-2 mt-6">
-            {Array.from({ length: featuresTotalPages }).map((_, index) => {
-              const realIndex = index + 1;
-              const isActive = featuresPage === realIndex;
-
-              return (
-                <button
-                  key={index}
-                  onClick={() => {
-                    setFeaturesTransitioning(true);
-                    setFeaturesPage(realIndex);
-                  }}
-                  className={`transition-all duration-300 rounded-full ${isActive
-                    ? 'w-8 h-3 bg-gradient-to-r from-purple-600 to-cyan-500'
-                    : 'w-3 h-3 bg-slate-300 hover:bg-slate-400'
-                    }`}
-                  aria-label={`Go to page ${index + 1}`}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ArcadeX Comparison Section */}
-      <ComparisonSection />
-
-      {/* Pricing Section */}
-      <section id="pricing" className="py-10 px-4 sm:px-6 lg:px-8 bg-white overflow-visible">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-[26px] font-bold text-slate-800 mb-2">
-              Our Packages
-            </h2>
-            <p className="text-[14px] text-slate-600 max-w-2xl mx-auto">
-              Choose the plan that fits your business. All plans include 30-day free trial.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {[
-              {
-                name: 'Basic',
-                price: '$149',
-                period: '/month',
-                savings: [
-                  { duration: '6 months', price: '$699', saved: 'Save $195' },
-                  { duration: 'Annual', price: '$1,199', saved: 'Save $589' }
-                ],
-                description: 'Essential tools for single-location arcades',
-                features: [
-                  '1 Business Location',
-                  'Core Analytics Dashboard',
-                  'Digital Identity & Ticketing',
-                  'Basic Staff Management',
-                  'Self-Service Kiosk Support',
-                  'Email Support'
-                ],
-                cta: 'Start Free Trial',
-                popular: false
-              },
-              {
-                name: 'Premium',
-                price: '$249',
-                period: '/month',
-                savings: [
-                  { duration: '6 months', price: '$1,099', saved: 'Save $395' },
-                  { duration: 'Annual', price: '$1,999', saved: 'Save $989' }
-                ],
-                description: 'Advanced features for growing venues',
-                features: [
-                  'Up to 2 Business Locations',
-                  'Real-Time Analytics Suite',
-                  'Biometric & NFC Verification',
-                  'Workforce Management & Payroll',
-                  'Multi-Site Visibility & Control',
-                  'Priority 24/7 Support'
-                ],
-                cta: 'Start Free Trial',
-                popular: true
-              },
-              {
-                name: 'Enterprise',
-                price: '$1,999',
-                period: '/year',
-                savings: [],
-                description: 'Full-service solution for arcade networks',
-                features: [
-                  'Full Access to All Features',
-                  'White-Label Platform',
-                  'Full API Access',
-                  'Custom Hardware Integrations',
-                  'Dedicated Account Manager',
-                  'Enterprise-Grade Security'
-                ],
-                cta: 'Contact Sales',
-                popular: false
-              }
-            ].map((plan, index) => (
-              <div
-                key={index}
-                onClick={() => setSelectedPlan(index)}
-                className={`glass-card rounded-2xl p-6 relative cursor-pointer transition-all duration-300 overflow-visible ${selectedPlan === index
-                  ? 'border-2 border-cyan-500 scale-105 shadow-2xl shadow-cyan-500/50'
-                  : 'hover:scale-102'
-                  }`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-amber-500 rounded-full text-white text-sm font-semibold whitespace-nowrap z-10">
-                    Most Popular
-                  </div>
-                )}
-                <div className="text-center mb-4">
-                  <h3 className="text-2xl font-bold text-slate-800 mb-2">{plan.name}</h3>
-                  <p className="text-slate-500 text-sm mb-3">{plan.description}</p>
-                  <div className="flex items-baseline justify-center">
-                    <span className="text-4xl font-bold text-slate-800">{plan.price}</span>
-                    <span className="text-slate-500 ml-1">{plan.period}</span>
-                  </div>
-                  {plan.savings.length > 0 && (
-                    <div className="mt-3 space-y-1">
-                      {plan.savings.map((s, sIndex) => (
-                        <div key={sIndex} className="text-xs text-slate-500">
-                          <span className="font-medium">{s.duration}:</span> {s.price}{' '}
-                          <span className="text-green-600 font-semibold">({s.saved})</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <ul className="space-y-3 mb-6">
-                  {plan.features.map((feature, fIndex) => (
-                    <li key={fIndex} className="flex items-start">
-                      <svg className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="text-slate-600 text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Carousel Section */}
-      <section className="py-10 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-violet-50 to-cyan-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-[26px] font-bold text-slate-800 mb-2">
-              Trusted by Arcade Owners
-            </h2>
-            <p className="text-base text-slate-600 max-w-2xl mx-auto">
-              See what our customers have to say about ArcadeX
-            </p>
-          </div>
-
-          <div
-            className="relative overflow-hidden cursor-grab active:cursor-grabbing py-6"
-            style={{ touchAction: 'pan-y' }}
-            onMouseDown={(e) => handleTestimonialsDragStart(e.clientX)}
-            onMouseMove={(e) => handleTestimonialsDragMove(e.clientX)}
-            onMouseUp={(e) => handleTestimonialsDragEnd(e.clientX)}
-            onMouseLeave={() => testimonialsDragging && handleTestimonialsDragEnd(testimonialsDragStart.x)}
-            onTouchStart={(e) => handleTestimonialsDragStart(e.touches[0].clientX)}
-            onTouchMove={(e) => handleTestimonialsDragMove(e.touches[0].clientX)}
-            onTouchEnd={(e) => handleTestimonialsDragEnd(e.changedTouches[0].clientX)}
-            onDragStart={(e) => e.preventDefault()}
-          >
-            <div
-              className="flex gap-8"
-              style={{
-                transform: `translateX(calc(-${testimonialsIndex * (100 / testimonialsVisibleCount)}% + ${testimonialsDragging ? testimonialsDragOffset : 0}px))`,
-                transition: testimonialsDragging || !isTransitioning ? 'none' : 'transform 600ms cubic-bezier(0.4, 0, 0.2, 1)',
-                willChange: 'transform'
-              }}
-              onTransitionEnd={handleTestimonialsTransitionEnd}
-            >
-              {extendedTestimonials.map((testimonial, index) => (
-                <div
-                  key={index}
-                  className="flex-shrink-0 glass-card rounded-xl p-5 relative z-content"
-                  style={{
-                    width: isMobile ? '100%' : `calc(${100 / testimonialsVisibleCount}% - ${(testimonialsVisibleCount - 1) * 2}rem / ${testimonialsVisibleCount})`
-                  }}
-                >
-                  <div className="flex mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <p className="text-slate-600 mb-4 italic">"{testimonial.quote}"</p>
-                  <div className="border-t border-slate-200 pt-4">
-                    <p className="text-slate-800 font-semibold">{testimonial.author}</p>
-                    <p className="text-slate-500 text-sm">{testimonial.role}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-slate-50 border-t border-slate-200 py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          {/* Top Row - Logo, Links, Social */}
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-6">
-            {/* Logo & Description */}
-            <div className="flex-shrink-0">
-              <div className="flex items-center space-x-1 mb-2">
-                <img src="/logo.png" alt="ArcadeX" className="max-h-8" />
-                <div className="flex flex-col">
-                  <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
-                    ArcadeX
-                  </span>
-                  <span className="text-[10px] font-medium text-slate-400 tracking-wide mt-0 leading-none">@ Charaviam Product</span>
-                </div>
-              </div>
-              <p className="text-slate-500 text-xs max-w-[200px]">
-                Premium gaming rewards platform for modern arcades.
-              </p>
-            </div>
-
-            {/* Links Grid */}
-            <div className="grid grid-cols-4 gap-8 text-sm">
-              <div>
-                <h4 className="text-slate-800 font-semibold mb-2 text-xs uppercase tracking-wide">Company</h4>
-                <ul className="space-y-1">
-                  <li><a href="/about" className="text-slate-500 hover:text-purple-600 text-xs">About</a></li>
-                  <li><a href="/services" className="text-slate-500 hover:text-purple-600 text-xs">Services</a></li>
-                  <li><a href="/products" className="text-slate-500 hover:text-purple-600 text-xs">Products</a></li>
-                  <li><a href="/blog" className="text-slate-500 hover:text-purple-600 text-xs">Blog</a></li>
-                  <li><a href="/contact" className="text-slate-500 hover:text-purple-600 text-xs">Contact</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-slate-800 font-semibold mb-2 text-xs uppercase tracking-wide">Contact</h4>
-                <ul className="space-y-1">
-                  <li className="text-slate-500 text-xs">support@arcadex.com</li>
-                  <li className="text-slate-500 text-xs">1-800-ARCADEX</li>
-                  <li className="text-slate-500 text-xs">Dallas, TX</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-slate-800 font-semibold mb-2 text-xs uppercase tracking-wide">Legal</h4>
-                <ul className="space-y-1">
-                  <li><a href="/privacy" className="text-slate-500 hover:text-purple-600 text-xs">Privacy</a></li>
-                  <li><a href="/terms" className="text-slate-500 hover:text-purple-600 text-xs">Terms</a></li>
-                  <li><a href="/compliance" className="text-slate-500 hover:text-purple-600 text-xs">Compliance</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-slate-800 font-semibold mb-2 text-xs uppercase tracking-wide">Account</h4>
-                <ul className="space-y-1">
-                  <li><a href="/login" className="text-slate-500 hover:text-purple-600 text-xs">Login</a></li>
-                  <li><a href="/signup" className="text-slate-500 hover:text-purple-600 text-xs">Sign Up</a></li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Social Icons */}
-            <div className="flex space-x-4">
-              <a href="#" className="text-slate-400 hover:text-purple-600 transition-colors">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                </svg>
-              </a>
-              <a href="#" className="text-slate-400 hover:text-purple-600 transition-colors">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-                </svg>
-              </a>
-              <a href="#" className="text-slate-400 hover:text-purple-600 transition-colors">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
-                </svg>
-              </a>
-            </div>
-          </div>
-
-          {/* Bottom Row - Copyright */}
-          <div className="border-t border-slate-200 pt-4">
-            <p className="text-slate-400 text-xs text-center">© 2025 ArcadeX. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </PublicLayout>
   );
 };
