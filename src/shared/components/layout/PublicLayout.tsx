@@ -10,7 +10,7 @@ interface PublicLayoutProps {
 
 /**
  * PublicLayout - Wrapper for all pre-login pages
- * Provides consistent Charvium-style header, footer, and theming
+ * Provides consistent Charviam-style header, footer, and theming
  * DO NOT use this for post-login pages
  */
 export const PublicLayout: React.FC<PublicLayoutProps> = ({
@@ -20,7 +20,7 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
 }) => {
     return (
         <div
-            className="min-h-screen flex flex-col public-bg"
+            className="min-h-screen flex flex-col bg-white dark:bg-slate-900"
             style={{ fontFamily: 'var(--public-font-sans)' }}
         >
             {showHeader && <PublicHeader />}

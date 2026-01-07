@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { PublicThemeToggle } from './PublicThemeToggle';
+import { PublicButton } from '../ui/PublicButton';
 
 interface NavLink {
     name: string;
@@ -16,6 +17,10 @@ const navLinks: NavLink[] = [
     { name: 'Pricing', path: '/', isScroll: true, scrollId: 'pricing' },
 ];
 
+/**
+ * PublicHeader - Charviam-styled navigation for pre-login pages
+ * Features: sticky header, gradient CTAs, mobile responsive
+ */
 export const PublicHeader: React.FC = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
     const [isScrolled, setIsScrolled] = React.useState(false);
@@ -32,6 +37,11 @@ export const PublicHeader: React.FC = () => {
 
     const handleNavClick = (link: NavLink) => {
         if (link.isScroll && link.scrollId) {
+            // If we're not on the home page, navigate first
+            if (location.pathname !== '/') {
+                window.location.href = `/#${link.scrollId}`;
+                return;
+            }
             const element = document.getElementById(link.scrollId);
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth' });
@@ -40,29 +50,26 @@ export const PublicHeader: React.FC = () => {
         setIsMobileMenuOpen(false);
     };
 
-    const isActive = (path: string) => {
-        if (path === '/') return location.pathname === '/';
-        return location.pathname.startsWith(path);
-    };
-
     return (
         <header
-            className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${isScrolled
-                ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-900/60 border-slate-200 dark:border-slate-700'
-                : 'bg-transparent border-transparent'
-                }`}
-            style={{ fontFamily: 'var(--public-font-sans)' }}
+            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+                isScrolled
+                    ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl shadow-lg border-b border-slate-200/50 dark:border-slate-700/50'
+                    : 'bg-transparent'
+            }`}
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center space-x-2">
+                    <Link to="/" className="flex items-center space-x-2 group">
                         <img src="/logo.png" alt="ArcadeX" className="h-10 w-auto" />
                         <div className="flex flex-col">
-                            <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                            <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent group-hover:from-indigo-500 group-hover:to-purple-500 transition-all">
                                 ArcadeX
                             </span>
-                            <span className="text-[9px] font-medium text-slate-500 dark:text-slate-400 tracking-wide leading-none">
+                            <span className={`text-[9px] font-medium tracking-wide leading-none transition-colors ${
+                                isScrolled ? 'text-slate-500 dark:text-slate-400' : 'text-slate-400 dark:text-slate-500'
+                            }`}>
                                 @ Charviam Product
                             </span>
                         </div>
@@ -71,34 +78,60 @@ export const PublicHeader: React.FC = () => {
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center space-x-1">
                         {navLinks.map((link) => (
-                            <button
-                                key={link.name}
-                                onClick={() => handleNavClick(link)}
-                                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${isActive(link.path)
-                                    ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30'
-                                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+                            link.isScroll ? (
+                                <button
+                                    key={link.name}
+                                    onClick={() => handleNavClick(link)}
+                                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                                        isScrolled
+                                            ? 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                                            : 'text-white/80 hover:text-white hover:bg-white/10'
                                     }`}
-                            >
-                                {link.name}
-                            </button>
+                                >
+                                    {link.name}
+                                </button>
+                            ) : (
+                                <Link
+                                    key={link.name}
+                                    to={link.path}
+                                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                                        isScrolled
+                                            ? 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                                            : 'text-white/80 hover:text-white hover:bg-white/10'
+                                    }`}
+                                >
+                                    {link.name}
+                                </Link>
+                            )
                         ))}
 
-                        {/* Sign Up / Login Button */}
-                        <Link
-                            to="/signup"
-                            className="ml-2 px-4 py-2 text-sm font-medium text-white rounded-md transition-all bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 shadow-md shadow-indigo-500/25 hover:shadow-lg hover:shadow-indigo-500/30"
-                        >
-                            Get Started
-                        </Link>
-
-                        <PublicThemeToggle />
+                        <div className="flex items-center gap-3 ml-4">
+                            <Link
+                                to="/login"
+                                className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                                    isScrolled
+                                        ? 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400'
+                                        : 'text-white/80 hover:text-white'
+                                }`}
+                            >
+                                Sign In
+                            </Link>
+                            <PublicButton variant="primary" size="sm" href="/signup">
+                                Get Started
+                            </PublicButton>
+                            <PublicThemeToggle />
+                        </div>
                     </nav>
 
                     {/* Mobile Menu Button */}
                     <div className="flex items-center gap-2 md:hidden">
                         <PublicThemeToggle />
                         <button
-                            className="p-2 text-slate-600 dark:text-slate-300"
+                            className={`p-2 rounded-lg transition-colors ${
+                                isScrolled
+                                    ? 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                                    : 'text-white hover:bg-white/10'
+                            }`}
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             aria-label="Toggle menu"
                         >
@@ -118,27 +151,40 @@ export const PublicHeader: React.FC = () => {
 
             {/* Mobile Navigation */}
             {isMobileMenuOpen && (
-                <div className="md:hidden border-t bg-white dark:bg-slate-900">
-                    <nav className="px-4 py-4 flex flex-col space-y-2">
+                <div className="md:hidden border-t border-slate-200/50 dark:border-slate-700/50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl">
+                    <nav className="px-4 py-4 flex flex-col space-y-1">
                         {navLinks.map((link) => (
-                            <button
-                                key={link.name}
-                                onClick={() => handleNavClick(link)}
-                                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors text-left ${isActive(link.path)
-                                    ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30'
-                                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
-                                    }`}
-                            >
-                                {link.name}
-                            </button>
+                            link.isScroll ? (
+                                <button
+                                    key={link.name}
+                                    onClick={() => handleNavClick(link)}
+                                    className="px-4 py-3 text-sm font-medium rounded-lg text-left text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                >
+                                    {link.name}
+                                </button>
+                            ) : (
+                                <Link
+                                    key={link.name}
+                                    to={link.path}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="px-4 py-3 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                >
+                                    {link.name}
+                                </Link>
+                            )
                         ))}
-                        <Link
-                            to="/signup"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="mt-4 px-4 py-2 text-sm font-medium text-center text-white rounded-md bg-gradient-to-r from-indigo-500 to-purple-600"
-                        >
-                            Get Started
-                        </Link>
+                        <div className="pt-4 space-y-2">
+                            <Link
+                                to="/login"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="block px-4 py-3 text-sm font-medium text-center rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            >
+                                Sign In
+                            </Link>
+                            <PublicButton variant="primary" className="w-full" href="/signup">
+                                Get Started
+                            </PublicButton>
+                        </div>
                     </nav>
                 </div>
             )}

@@ -137,8 +137,8 @@ export default defineConfig(({ mode }) => {
         '@/contexts': path.resolve(__dirname, './src/contexts'),
       },
     },
-    server: {
-      port: 3000,
+  server: {
+      port: 8080,
       host: true,
       allowedHosts: [
         '.localhost',
